@@ -1,15 +1,15 @@
 package br.com.ufop.main;
 
-import br.com.ufop.classes.Vertex;
-import br.com.ufop.constants.K;
-import br.com.ufop.utils.Instance;
-import br.com.ufop.utils.Utils;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+
+import br.com.ufop.classes.Vertex;
+import br.com.ufop.constants.K;
+import br.com.ufop.genetic.Chromosome;
+import br.com.ufop.genetic.GeneticAlgorithm;
+import br.com.ufop.utils.Instance;
+import br.com.ufop.utils.Utils;
 
 public class Main {
 	private static Instance instance;
@@ -17,47 +17,45 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		List<String> instances = Utils.getInstances(new File(K.INSTANCES_PATH));
 
-		
 		for(String inst : instances) {
 			instance = new Instance(inst);
 			
+			double bestCost = Integer.MAX_VALUE;
+			Chromosome bestSolution = new Chromosome();
+			
+			GeneticAlgorithm genetic = GeneticAlgorithm.getInstance(instance);
+			
+			for(int i = 0; i < K.GENERATIONS_AMOUNT; i++) {
+				for(Chromosome chromossome : genetic.getPopulation()) {
+					double cost = genetic.calculateFitness(chromossome);
+					
+					chromossome.setCost(cost);
+					
+					if(cost < bestCost) {
+						bestCost = cost;
+						bestSolution = chromossome;
+					}
+				}
+				
+				for(int j = 0; j < K.POPULATION_AMOUNT / 2; j++) {
+					genetic.reproduction();
+				}
+				
+				genetic.mutation();
+				
+				genetic.changePopulation();
+			}
+			
+			genetic.clear();
+			
+			System.out.println("Instance: " + instance.getName() + " - Cost: " + bestCost);
 
+			for(Vertex vertex : bestSolution.getPath()) {
+				System.out.print(vertex.getNumber() + " ");
+			}
+			System.out.println();
+			
+			break;
 		}
-        for(Vertex costumer : instance.getCustomers()) {
-            costumer.setDistanceToDepot(calculateRatio(instance.getDepot(), costumer));
-        }
-
-        instance.sortCustomers();
-
-        System.out.println("\n\n\n");
-        System.out.println(instance.getCustomers());
-        calculateRoute();
-
-	}
-
-	private static void calculateRoute() {
-		List<List<Vertex>> routes = new ArrayList<List<Vertex>>();
-
-        List<Vertex> route = new ArrayList<>();
-        route.add(instance.getCustomers().get(0));
-        instance.getCustomers().get(0).setVisited(true);
-
-        List<Vertex> aux = new ArrayList<>();
-        for(Vertex costumer : instance.getCustomers()) {
-            Vertex vAux = costumer;
-            if(!costumer.isVisited()) {
-                vAux.setDistanceToDepot(calculateRatio(instance.getCustomers().get(0), costumer));
-                aux.add(vAux);
-            }
-        }
-
-        System.out.println("\n\n\n");
-        System.out.println(aux);
-
-		int smallest;
-	}
-
-	private static double calculateRatio(Vertex origin, Vertex destination) {
-		return instance.getGraph()[origin.getNumber() - 1][destination.getNumber() - 1] / destination.getDemand();
 	}
 }

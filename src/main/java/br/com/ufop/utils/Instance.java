@@ -9,6 +9,7 @@ import br.com.ufop.constants.K;
 
 public class Instance {
 	
+	private String name;
 	private int dimension;
 	private int capacity;
 	private Vertex depot;
@@ -17,7 +18,6 @@ public class Instance {
 
 	public  void sortCustomers(){
 		Collections.sort(this.customers, new Comparator<Vertex>() {
-			@Override
 			public int compare(Vertex vertex, Vertex t1) {
 				return Double.compare(vertex.getDistanceToDepot(), t1.getDistanceToDepot());
 			}
@@ -27,10 +27,13 @@ public class Instance {
 	public Instance(String instance) throws IOException {
 		List<String> lines = Utils.readInstance(K.INSTANCES_PATH + instance);
 		
+		String[] splited_name = lines.get(0).split(":");
+		this.name = splited_name[splited_name.length - 1].trim();
+		
 		String[] splited_dimension = lines.get(3).split(":");
 		this.dimension = Integer.parseInt(splited_dimension[splited_dimension.length - 1].trim());
 		
-		String[] splited_capacity = lines.get(3).split(":");
+		String[] splited_capacity = lines.get(5).split(":");
 		this.capacity = Integer.parseInt(splited_capacity[splited_capacity.length - 1].trim());
 		
 		int i = 8;
@@ -75,8 +78,6 @@ public class Instance {
 			this.customers.add(new Vertex(entry.getValue().get(0), entry.getValue().get(1), entry.getKey(), demands.get(entry.getKey())));
 		}
 		
-		System.out.println(vertexes);
-		
 		for(i = 1; i <= this.graph.length; i++) {
 			for(j = 1; j <= this.graph.length; j++) {
 				if(i == j) {
@@ -110,5 +111,13 @@ public class Instance {
 
 	public double[][] getGraph() {
 		return graph;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

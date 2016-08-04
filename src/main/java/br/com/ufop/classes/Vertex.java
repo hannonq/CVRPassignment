@@ -1,12 +1,13 @@
 package br.com.ufop.classes;
 
-public class Vertex implements Comparable<Vertex>{
+public class Vertex implements Comparable<Vertex> {
 	private int number;
 	private double coordX;
 	private double coordY;
 	private double demand;
 	private boolean visited;
 	private double distanceToDepot;
+	private double probability;
 	
 	public Vertex(Double coordX, Double coordY, int number, int demand) {
 		this.coordX = coordX;
@@ -16,9 +17,8 @@ public class Vertex implements Comparable<Vertex>{
 	}
 
 	public int compareTo(Vertex other){
-		return Double.compare(this.distanceToDepot, other.distanceToDepot);
+		return Double.compare(other.getProbability(), this.getProbability());
 	}
-
 
 	public boolean isVisited() {
 		return visited;
@@ -69,6 +69,14 @@ public class Vertex implements Comparable<Vertex>{
 
 	@Override
 	public String toString() {
-		return "Vertex [ Distance Depot= "+distanceToDepot+" number=" + number + ", coordX=" + coordX + ", coordY=" + coordY + ", demand=" + demand + "]";
+		return "Vertex [ Number= " + number + "]";
+	}
+
+	public double getProbability() {
+		return probability;
+	}
+
+	public void setProbability(double probability) {
+		this.probability = probability;
 	}
 }
