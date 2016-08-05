@@ -11,7 +11,7 @@ public class Chromosome extends ArrayList<Vertex> {
 	private List<Vertex> path = new ArrayList<Vertex>();
 
 	private static final long serialVersionUID = 1L;
-
+	
 	public double getCost() {
 		return cost;
 	}

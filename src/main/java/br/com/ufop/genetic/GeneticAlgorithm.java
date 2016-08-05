@@ -52,7 +52,12 @@ public class GeneticAlgorithm {
 		return instance;
 	}
 	
-	public double calculateFitness(Chromosome chromosome) {
+	public double calculateFitness(Chromosome chrom) {
+		Chromosome chromosome = new Chromosome();
+		
+		chromosome.setCost(chrom.getCost());
+		chromosome.addAll(chrom);
+		
 		Collections.sort(chromosome);
 		
 		// Custo do caminho
@@ -75,25 +80,22 @@ public class GeneticAlgorithm {
 				amount -= vertex.getDemand();
 				
 				previous = vertex;
-				
-				path.add(vertex);
-				
 			} else {
 				previous = data.getDepot();
 				amount = data.getCapacity();
 				cost += data.getGraph()[vertex.getNumber() - 1][data.getDepot().getNumber() - 1];
 				
-				path.add(previous);
-				
 				i--;
 			}
 			
-			if(i == chromosome.size() - 1 && previous.getNumber() != data.getDepot().getNumber()) {
+			path.add(previous);
+			
+			if((i == chromosome.size() - 1) && (previous.getNumber() != data.getDepot().getNumber())) {
 				path.add(data.getDepot());
 				cost += data.getGraph()[previous.getNumber() - 1][data.getDepot().getNumber() - 1];
 			}
 			
-			chromosome.setPath(path);
+			chrom.setPath(path);
 		}
 		
 		return cost;
@@ -134,9 +136,6 @@ public class GeneticAlgorithm {
 		}
 		
 		picked.clear();
-		
-//		new_population.add(localSearch(parents.get(0)));
-//		new_population.add(localSearch(parents.get(1)));
 		
 		new_population.add(parents.get(0));
 		new_population.add(parents.get(1));
@@ -248,35 +247,40 @@ public class GeneticAlgorithm {
 		}
 	}
 	
-	public Chromosome localSearch(Chromosome chromosome) {
-		for(int i = 0; i < chromosome.size(); i++) {
-			for(int j = i + 1; j < chromosome.size(); j++) {
-				double cost = chromosome.getCost();
-				List<Vertex> path = chromosome.getPath();
-				
-				double probability = chromosome.get(i).getProbability();
-				
-				chromosome.get(i).setProbability(chromosome.get(j).getProbability());
-				chromosome.get(j).setProbability(probability);
-				
-				double fitness = calculateFitness(chromosome);
-				
-				if(fitness < chromosome.getCost()) {
-					chromosome.setCost(fitness);
+	public void localSearch(Chromosome chromosome) {
+		boolean improvment;
+		
+		do {
+			improvment = false;
 					
-					return chromosome;
-				} else {
-					probability = chromosome.get(i).getProbability();
+			for(int i = 0; i < chromosome.size(); i++) {
+				for(int j = i + 1; j < chromosome.size(); j++) {
+					double cost = chromosome.getCost();
+					List<Vertex> path = chromosome.getPath();
+					
+					double probability = chromosome.get(i).getProbability();
 					
 					chromosome.get(i).setProbability(chromosome.get(j).getProbability());
 					chromosome.get(j).setProbability(probability);
 					
-					chromosome.setCost(cost);
-					chromosome.setPath(path);
+					double fitness = calculateFitness(chromosome);
+					
+					if(fitness < chromosome.getCost()) {
+						chromosome.setCost(fitness);
+						
+						improvment = true;
+						
+					} else {
+						probability = chromosome.get(i).getProbability();
+						
+						chromosome.get(i).setProbability(chromosome.get(j).getProbability());
+						chromosome.get(j).setProbability(probability);
+						
+						chromosome.setCost(cost);
+						chromosome.setPath(path);
+					}
 				}
 			}
-		}
-		
-		return chromosome;
+		} while(improvment);
 	}
 }

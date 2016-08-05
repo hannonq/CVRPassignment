@@ -18,6 +18,7 @@ public class Main {
 		List<String> instances = Utils.getInstances(new File(K.INSTANCES_PATH));
 
 		for(String inst : instances) {
+//		for(int k = 0; k < 10; k++) {
 			instance = new Instance(inst);
 			
 			double bestCost = Integer.MAX_VALUE;
@@ -46,16 +47,16 @@ public class Main {
 				genetic.changePopulation();
 			}
 			
+			genetic.localSearch(bestSolution);
+			
 			genetic.clear();
 			
-			System.out.println("Instance: " + instance.getName() + " - Cost: " + bestCost);
+			System.out.println("Instance: " + instance.getName() + " - Cost: " + bestSolution.getCost());
 
 			for(Vertex vertex : bestSolution.getPath()) {
 				System.out.print(vertex.getNumber() + " ");
 			}
 			System.out.println();
-			
-			break;
 		}
 	}
 }
