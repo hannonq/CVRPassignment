@@ -1,7 +1,6 @@
 package br.com.ufop.genetic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -192,23 +191,10 @@ public class GeneticAlgorithm {
 	}
 	
 	public void refineSolution(Chromosome bestSolution) {
-		Integer[] array = new Integer[population.size()];
-		
 		Random random = new Random();
-	    
-		for (int i = 0; i < array.length; i++) {
-			if(population.get(i) == bestSolution) {
-				continue;
-			}
-			
-	        array[i] = i;
-	    }
-	    
-	    List<Integer> indexes = Arrays.asList(array);
-	    Collections.shuffle(indexes);
-	    
+		
 	    for(int i = 0; i < population.size(); i++) {
-	    	if(random.nextDouble() < K.MUTATION_RATE) {
+	    	if(random.nextDouble() < K.REPRODUCTION_MODIFYING_PERCENTAGE) {
 	    		population.set(i, bestSolution);
 	    	}
 	    }
@@ -238,7 +224,7 @@ public class GeneticAlgorithm {
 	public void mutation() {
 		Random random = new Random();
 		
-		for(Chromosome chromossome : population) {
+		for(Chromosome chromossome : new_population) {
 			for(Vertex vertex : chromossome) {
 				if(random.nextDouble() < K.MUTATION_RATE) {
 					vertex.setProbability(random.nextDouble());

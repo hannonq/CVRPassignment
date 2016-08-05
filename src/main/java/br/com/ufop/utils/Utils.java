@@ -1,8 +1,10 @@
 package br.com.ufop.utils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,5 +34,13 @@ public class Utils {
 	    }
 		
 		return instances;
+	}
+	
+	public static void writeFile(String filePath, String fileContent, boolean append) throws IOException {
+		BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, append));
+        
+        bw.write(fileContent);
+        
+        bw.close();
 	}
 }
