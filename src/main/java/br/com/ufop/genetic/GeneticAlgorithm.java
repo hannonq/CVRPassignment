@@ -93,9 +93,9 @@ public class GeneticAlgorithm {
 				path.add(data.getDepot());
 				cost += data.getGraph()[previous.getNumber() - 1][data.getDepot().getNumber() - 1];
 			}
-			
-			chrom.setPath(path);
 		}
+		
+		chrom.setPath(path);
 		
 		return cost;
 	}
